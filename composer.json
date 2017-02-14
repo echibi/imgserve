@@ -1,0 +1,23 @@
+{
+  "name": "echibi/imgserve",
+  "authors": [
+    {
+      "name": "echibi",
+      "email": "jonas.rensfeldt@gmail.com"
+    }
+  ],
+  "require": {
+    "slim/slim": "^3.7",
+    "monolog/monolog": "^1.22",
+    "usmanhalalit/pixie": "^2.0",
+    "intervention/image": "^2.3"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "app"
+    }
+  },
+  "require-dev": {
+    "robmorgan/phinx": "^0.7.0"
+  }
+}
