@@ -9,6 +9,7 @@ namespace App\Controllers;
 
 use App\Models\ImageModel;
 use Intervention\Image\ImageManager;
+use phpFastCache\Cache\ExtendedCacheItemPoolInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
 use Slim\Router;
@@ -16,9 +17,9 @@ use Slim\Router;
 class HomeController extends Controller {
 
 	/**
-	 * @var Router
+	 * @var ExtendedCacheItemPoolInterface
 	 */
-	public $router;
+	public $cache;
 
 
 	public $imageManager;
@@ -32,15 +33,24 @@ class HomeController extends Controller {
 	 */
 	public function getRandomImage( Request $request, Response $response, $args ) {
 
-		$baseImgPath = $this->app->get( 'settings' )['images']['dir'] . '/';
+		$this->cache = $this->app->get( 'cache' );
 
-		/**
-		 * @var ImageModel $imageModel
-		 */
-		$imageModel = $this->app->get( 'ImageModel' );
-		$image      = $imageModel->getRandom();
-		$imagePath  = $baseImgPath . $image->filename;
-		if ( file_exists( $imagePath ) ) {
+		$width  = $args['width'];
+		$height = $args['height'];
+
+		$key = $width . 'x' . $height;
+
+		$cache = $this->cache->getItem( $key );
+
+		if ( is_null( $cache->get() ) ) {
+			$baseImgPath = $this->app->get( 'settings' )['images']['dir'] . '/';
+
+			/**
+			 * @var ImageModel $imageModel
+			 */
+			$imageModel = $this->app->get( 'ImageModel' );
+			$image      = $imageModel->getRandom();
+			$imagePath  = $baseImgPath . $image->filename;
 
 			$this->imageManager = $this->app->get( 'image' );
 
@@ -57,11 +67,16 @@ class HomeController extends Controller {
 			$placeholder->response( 'jpeg' );
 
 
-			$response->write( $placeholder );
+			$cache->set( $placeholder )->expiresAfter( 10 );
+			$this->cache->save( $cache );
 
-			return $response->withHeader( 'Content-Type', 'image/jpeg' );
-
+		} else {
+			$placeholder = $cache->get();
 		}
+
+		$response->write( $placeholder );
+
+		return $response->withHeader( 'Content-Type', 'image/jpeg' );
 
 
 	}

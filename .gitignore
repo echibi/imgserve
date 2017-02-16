@@ -1,6 +1,9 @@
 logs/*
 !logs/.gitkeep
 
+cache/*
+!logs/.gitkeep
+
 vendor
 
 public/img/*

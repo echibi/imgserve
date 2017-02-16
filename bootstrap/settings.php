@@ -1,4 +1,5 @@
 <?php
+
 return [
 	'settings' => [
 		'displayErrorDetails'    => true, // set to false in production
@@ -20,9 +21,13 @@ return [
 			'max_files' => 60
 		],
 		'images'                 => [
-			'driver'          => 'gd',
-			'dir' => __DIR__ . '/../public/img'
+			'driver' => 'gd',
+			'dir'    => __DIR__ . '/../public/img'
 		],
+		'cache'                  => [
+			'type' => 'files',
+			'dir' => __DIR__ . '/../cache'
+		]
 	],
 ];
 

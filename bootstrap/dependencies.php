@@ -40,6 +40,22 @@ $c['db'] = function ( ContainerInterface $c ) {
 /**
  * @param ContainerInterface $c
  *
+ * @return \phpFastCache\Cache\ExtendedCacheItemPoolInterface
+ * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
+ */
+$c['cache'] = function ( ContainerInterface $c ) {
+	$settings = $c->get( 'settings' )['cache'];
+	// Setup File Path on your config files
+	\phpFastCache\CacheManager::setup( array(
+		"path" => $settings['dir'],
+	) );
+
+	return \phpFastCache\CacheManager::getInstance( $settings['type'] );
+};
+
+/**
+ * @param ContainerInterface $c
+ *
  * @return \Intervention\Image\ImageManager
  */
 $c['image'] = function ( ContainerInterface $c ) {
