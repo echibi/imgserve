@@ -12,7 +12,7 @@ $c = $app->getContainer();
  *
  * @return bool|\Pixie\QueryBuilder\QueryBuilderHandler
  */
-$container['db'] = function ( ContainerInterface $c ) {
+$c['db'] = function ( ContainerInterface $c ) {
 	$db = $c['settings']['db'];
 	$qb = false;
 
@@ -35,4 +35,26 @@ $container['db'] = function ( ContainerInterface $c ) {
 	}
 
 	return $qb;
+};
+
+/**
+ * @param ContainerInterface $c
+ *
+ * @return \Intervention\Image\ImageManager
+ */
+$c['image'] = function ( ContainerInterface $c ) {
+	$settings = $c->get( 'settings' )['images'];
+
+	return new \Intervention\Image\ImageManager( array(
+		'driver' => $settings['driver']
+	) );
+};
+
+/**
+ * @param ContainerInterface $c
+ *
+ * @return \App\Models\ImageModel
+ */
+$c['ImageModel'] = function ( ContainerInterface $c ) {
+	return new \App\Models\ImageModel( $c );
 };
