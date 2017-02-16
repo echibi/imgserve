@@ -8,6 +8,7 @@ namespace App\Controllers;
 
 
 use Interop\Container\ContainerInterface;
+use Monolog\Logger;
 
 class Controller {
 	/**
@@ -16,9 +17,15 @@ class Controller {
 	public $app;
 
 	/**
+	 * @var Logger
+	 */
+	public $logger;
+
+	/**
 	 * @param ContainerInterface $c
 	 */
 	public function __construct( ContainerInterface $c ) {
-		$this->app = $c;
+		$this->app    = $c;
+		$this->logger = $c->get( 'logger' );
 	}
 }

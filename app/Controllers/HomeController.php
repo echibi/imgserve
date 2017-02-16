@@ -12,7 +12,6 @@ use Intervention\Image\ImageManager;
 use phpFastCache\Cache\ExtendedCacheItemPoolInterface;
 use Slim\Http\Request;
 use Slim\Http\Response;
-use Slim\Router;
 
 class HomeController extends Controller {
 
@@ -43,7 +42,9 @@ class HomeController extends Controller {
 		$cache = $this->cache->getItem( $key );
 
 		if ( is_null( $cache->get() ) ) {
-			$baseImgPath = $this->app->get( 'settings' )['images']['dir'] . '/';
+
+			$settings    = $this->app->get( 'settings' );
+			$baseImgPath = $settings['images']['dir'] . '/';
 
 			/**
 			 * @var ImageModel $imageModel
@@ -66,9 +67,13 @@ class HomeController extends Controller {
 			}
 			$placeholder->response( 'jpeg' );
 
-
-			$cache->set( $placeholder )->expiresAfter( 10 );
+			$cache->set( $placeholder )->expiresAfter( $settings['cache']['expires'] );
 			$this->cache->save( $cache );
+
+			$this->logger->addInfo( 'generated new image', array(
+				'key'   => $key,
+				'image' => $image
+			) );
 
 		} else {
 			$placeholder = $cache->get();

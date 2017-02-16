@@ -25,8 +25,9 @@ return [
 			'dir'    => __DIR__ . '/../public/img'
 		],
 		'cache'                  => [
-			'type' => 'files',
-			'dir' => __DIR__ . '/../cache'
+			'type'    => 'files',
+			'dir'     => __DIR__ . '/../cache',
+			'expires' => 60 * 60 * 24
 		]
 	],
 ];

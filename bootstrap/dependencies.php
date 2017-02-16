@@ -40,6 +40,23 @@ $c['db'] = function ( ContainerInterface $c ) {
 /**
  * @param ContainerInterface $c
  *
+ * @return \Monolog\Logger
+ */
+$c['logger'] = function ( ContainerInterface $c ) {
+	$settings = $c->get( 'settings' )['logger'];
+	$logger   = new Monolog\Logger( $settings['name'] );
+
+	$logger->pushProcessor( new Monolog\Processor\UidProcessor() );
+	$logger->pushHandler( new \Monolog\Handler\RotatingFileHandler( $settings['path'], $settings['max_files'], $settings['level'] ) );
+
+	// $logger->pushHandler( new Monolog\Handler\StreamHandler( $settings['path'], $settings['level'] ) );
+
+	return $logger;
+};
+
+/**
+ * @param ContainerInterface $c
+ *
  * @return \phpFastCache\Cache\ExtendedCacheItemPoolInterface
  * @throws \phpFastCache\Exceptions\phpFastCacheDriverCheckException
  */
